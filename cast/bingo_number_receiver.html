@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Random Number Receiver</title>
+  <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+</head>
+<body style="text-align:center;font-size:72px;">
+  <div id="number">等待投放...</div>
+
+  <script>
+    const context = cast.framework.CastReceiverContext.getInstance();
+    const channel = new cast.framework.messages.BroadcastMessage();
+
+    context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
+      const number = event.data;
+      document.getElementById("number").innerText = number;
+    });
+
+    context.start();
+  </script>
+</body>
+</html>
