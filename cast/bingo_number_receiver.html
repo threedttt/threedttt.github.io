@@ -47,7 +47,7 @@
     function updateHistory() {
       historyDiv.innerText = historyList.join("　");
     }
-
+    /*
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       try {
         const data = JSON.parse(event.data);
@@ -68,7 +68,18 @@
         console.error("解析錯誤", err);
       }
     });
-
+*/
+    context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
+    console.log("原始資料：", event.data);
+  try {
+    const data = JSON.parse(event.data);
+    console.log("解析成功：", data);
+    ...
+  } catch (err) {
+    console.error("解析錯誤", err);
+  }
+});
+    
     context.start({ statusText: '準備就緒' });
   </script>
 </body>
