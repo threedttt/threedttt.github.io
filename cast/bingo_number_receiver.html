@@ -2,39 +2,33 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Bingo Receiver</title>
+  <title>Bingo Number Receiver</title>
   <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
+    body {
       background-color: white;
       color: black;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-family: sans-serif;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
     }
 
     #number {
-      font-size: 10vw;
-      margin-bottom: 20px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
+      font-size: 72px;
+      margin-top: 50px;
+      transition: transform 0.2s ease;
     }
 
-    .animate {
-      transform: scale(1.4);
-      opacity: 0;
+    #number.animate {
+      transform: scale(1.3);
     }
 
     #history {
-      width: 90%;
-      text-align: center;
-      font-size: 7vw; /* 70% of 10vw */
+      font-size: 50px;
+      margin-top: 30px;
       word-wrap: break-word;
-      line-height: 1.4;
+      padding: 0 20px;
     }
   </style>
 </head>
@@ -50,28 +44,30 @@
     const historyDiv = document.getElementById("history");
     const historyList = [];
 
+    function updateHistory() {
+      historyDiv.innerText = historyList.join("　");
+    }
+
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
-      const number = event.data;
-      console.log("接收到訊息:", number);
+      try {
+        const data = JSON.parse(event.data);
+        const current = data.current;
+        const history = data.history;
 
-      // 動畫效果
-      numberDiv.classList.add("animate");
+        numberDiv.innerText = current;
 
-      setTimeout(() => {
-        numberDiv.innerText = number;
-        numberDiv.classList.remove("animate");
-      }, 150);
-
-      // 加到歷史記錄（避免重複）
-      if (!historyList.includes(number)) {
-        historyList.push(number);
+        historyList.length = 0;
+        historyList.push(...history);
         updateHistory();
+
+        numberDiv.classList.add("animate");
+        setTimeout(() => {
+          numberDiv.classList.remove("animate");
+        }, 150);
+      } catch (err) {
+        console.error("解析錯誤", err);
       }
     });
-
-    function updateHistory() {
-      historyDiv.innerText = historyList.join("  ");
-    }
 
     context.start({ statusText: '準備就緒' });
   </script>
