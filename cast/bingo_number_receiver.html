@@ -2,6 +2,83 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <title>Bingo Number Receiver</title>
+  <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <style>
+    body {
+      background-color: white;
+      color: black;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #number {
+      font-size: 72px;
+      margin-top: 50px;
+      transition: transform 0.2s ease;
+    }
+
+    #number.animate {
+      transform: scale(1.3);
+    }
+
+    #history {
+      font-size: 50px;
+      margin-top: 30px;
+      word-wrap: break-word;
+      padding: 0 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="number">等待投放...</div>
+  <div id="history"></div>
+
+  <script>
+    const context = cast.framework.CastReceiverContext.getInstance();
+    context.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+
+    const numberDiv = document.getElementById("number");
+    const historyDiv = document.getElementById("history");
+    const historyList = [];
+
+    function updateHistory() {
+      historyDiv.innerText = historyList.join("　");
+    }
+
+    context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
+      try {
+        const data = JSON.parse(event.data);
+        const current = data.current;
+        const history = data.history;
+
+        numberDiv.innerText = current;
+
+        historyList.length = 0;
+        historyList.push(...history);
+        updateHistory();
+
+        numberDiv.classList.add("animate");
+        setTimeout(() => {
+          numberDiv.classList.remove("animate");
+        }, 150);
+      } catch (err) {
+        console.error("解析錯誤", err);
+      }
+    });
+
+    context.start({ statusText: '準備就緒' });
+  </script>
+</body>
+</html>
+
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
   <title>Random Number Receiver</title>
   <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   <style>
@@ -56,3 +133,4 @@
   </script>
 </body>
 </html>
+-->
