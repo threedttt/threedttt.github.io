@@ -10,14 +10,15 @@
 
   <script>
     const context = cast.framework.CastReceiverContext.getInstance();
-    const channel = new cast.framework.messages.BroadcastMessage();
+    context.setLoggerLevel(cast.framework.LoggerLevel.DEBUG); // Optional: 查看除錯日誌
 
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       const number = event.data;
+      console.log("接收到訊息:", number);
       document.getElementById("number").innerText = number;
     });
 
-    context.start();
+    context.start({ statusText: '準備就緒' });
   </script>
 </body>
 </html>
