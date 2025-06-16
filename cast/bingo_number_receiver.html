@@ -2,25 +2,25 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Random Number Receiver</title>
+  <title>Bingo Receiver</title>
   <script type="text/javascript" src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
-      width: 100%;
       background-color: white;
       color: black;
+      height: 100%;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      text-align: center;
       font-family: sans-serif;
     }
 
     #number {
       font-size: 10vw;
+      margin-bottom: 20px;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
@@ -28,29 +28,50 @@
       transform: scale(1.4);
       opacity: 0;
     }
+
+    #history {
+      width: 90%;
+      text-align: center;
+      font-size: 7vw; /* 70% of 10vw */
+      word-wrap: break-word;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
   <div id="number">等待投放...</div>
+  <div id="history"></div>
 
   <script>
-    const numberDiv = document.getElementById("number");
     const context = cast.framework.CastReceiverContext.getInstance();
     context.setLoggerLevel(cast.framework.LoggerLevel.DEBUG);
+
+    const numberDiv = document.getElementById("number");
+    const historyDiv = document.getElementById("history");
+    const historyList = [];
 
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       const number = event.data;
       console.log("接收到訊息:", number);
 
-      // 加動畫
+      // 動畫效果
       numberDiv.classList.add("animate");
 
-      // 短暫延遲後更換內容並移除動畫類別（觸發 transition）
       setTimeout(() => {
         numberDiv.innerText = number;
         numberDiv.classList.remove("animate");
-      }, 150); // 動畫時間的一半
+      }, 150);
+
+      // 加到歷史記錄（避免重複）
+      if (!historyList.includes(number)) {
+        historyList.push(number);
+        updateHistory();
+      }
     });
+
+    function updateHistory() {
+      historyDiv.innerText = historyList.join("  ");
+    }
 
     context.start({ statusText: '準備就緒' });
   </script>
