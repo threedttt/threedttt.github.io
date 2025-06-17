@@ -25,8 +25,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 8vw;
-      transition: transform 0.2s ease;
+      font-size: 20vw;
+      transition: transform 2s ease;
       z-index: 10;
     }
 
@@ -41,7 +41,7 @@
       justify-content: center;
       color: white;
       border-radius: 6px;
-      font-size: 1.5vw;
+      font-size: 3vw;
       font-weight: bold;
     }
 
@@ -63,7 +63,7 @@
 </head>
 <body>
   <div id="container">
-    <div id="number">等待投放...v6</div>
+    <div id="number">等待投放...v7</div>
     <pre id="debug"></pre>
   </div>
 
@@ -147,7 +147,7 @@
 
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const boxSize = Math.min(w, h) / 15;
+      const boxSize = Math.min(w, h) / 10;
       const gap = boxSize * 0.1;
       const centerX = w / 2 - boxSize / 2;
       const centerY = h / 2 - boxSize / 2;
@@ -165,16 +165,16 @@
         const data = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
         render(data.current, data.history);
       } catch (err) {
-        debugLog("解析錯誤：" + err.message);
+        //debugLog("解析錯誤：" + err.message);
         console.error("解析錯誤", err);
       }
     });
 
     context.start({ statusText: '準備就緒' });
-    debugLog("接收器已啟動");
+    //debugLog("接收器已啟動");
 
     // 測試用
-    testRender();
+    //testRender();
   </script>
 </body>
 </html>
