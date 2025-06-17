@@ -45,28 +45,11 @@
       font-size: 5vw;
       font-weight: bold;
     }
-/*
-    #debug {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      font-size: 16px;
-      color: #666;
-      text-align: left;
-      padding: 10px;
-      background: #f4f4f4;
-      border-top: 1px solid #ccc;
-      white-space: pre-wrap;
-      z-index: 20;
-    }
-    */
   </style>
 </head>
 <body>
   <div id="container">
-    <div id="number">等待投放...v4</div>
-  <!--  <pre id="debug"></pre> -->
+    <div id="number">等待投放...</div>
   </div>
 
   <script>
@@ -75,14 +58,8 @@
 
     const container = document.getElementById("container");
     const numberDiv = document.getElementById("number");
-    const debugDiv = document.getElementById("debug");
     const COLORS = ["#B71C1C", "#1B5E20", "#0D47A1", "#F57F17", "#4A148C"];
-/*
-    function debugLog(msg) {
-      const now = new Date().toISOString().substr(11, 8);
-      debugDiv.innerText += `[${now}] ${msg}\n`;
-    }
-*/
+
     function placeBoxes(centerX, centerY, boxSize, gap, values) {
       container.querySelectorAll(".history-box").forEach(e => e.remove());
 
@@ -91,9 +68,8 @@
       const grid = Array.from({ length: rows }, () => Array(cols).fill(null));
 
       let x = 0, y = 0;
-      let dir = 0;
-      let layer = 0;
       let index = 0;
+      let layer = 0;
 
       while (index < values.length) {
         const top = layer;
@@ -142,10 +118,29 @@
       }
     }
 
+    function animateCurrentNumber(target, callback) {
+      let duration = 3000;
+      let interval = 100;
+      let elapsed = 0;
+
+      const randomInt = () => Math.floor(Math.random() * 100).toString();
+
+      const intervalId = setInterval(() => {
+        numberDiv.innerText = randomInt();
+        elapsed += interval;
+        if (elapsed >= duration) {
+          clearInterval(intervalId);
+          numberDiv.innerText = target;
+          if (callback) callback();
+        }
+      }, interval);
+    }
+
     function render(current, history) {
-      numberDiv.innerText = current;
       numberDiv.classList.add("animate");
       setTimeout(() => numberDiv.classList.remove("animate"), 150);
+
+      animateCurrentNumber(current);
 
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -158,25 +153,18 @@
 
     function testRender() {
       render("99", ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]);
-      //debugLog("執行 testRender 顯示測試資料");
     }
 
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       try {
-        //debugLog("收到訊息：" + JSON.stringify(event.data));
         const data = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
         render(data.current, data.history);
       } catch (err) {
-        //debugLog("解析錯誤：" + err.message);
         console.error("解析錯誤", err);
       }
     });
 
     context.start({ statusText: '準備就緒' });
-    //debugLog("接收器已啟動");
-
-    // 測試用
-    //testRender();
   </script>
 </body>
 </html>
