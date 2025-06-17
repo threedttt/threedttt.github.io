@@ -161,7 +161,7 @@
 
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       try {
-        debugLog("收到訊息：" + JSON.stringify(event.data));
+        //debugLog("收到訊息：" + JSON.stringify(event.data));
         const data = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
         render(data.current, data.history);
       } catch (err) {
