@@ -63,7 +63,7 @@
 </head>
 <body>
   <div id="container">
-    <div id="number">等待投放...v5</div>
+    <div id="number">等待投放...v6</div>
     <pre id="debug"></pre>
   </div>
 
@@ -84,34 +84,58 @@
     function placeBoxes(centerX, centerY, boxSize, gap, values) {
       container.querySelectorAll(".history-box").forEach(e => e.remove());
 
-      let left = 0, top = 0, right = 0, bottom = 0;
-      let dir = 0; // 0:right, 1:down, 2:left, 3:up
-      let steps = 1, stepCount = 0, turns = 0;
+      const cols = Math.floor(window.innerWidth / (boxSize + gap));
+      const rows = Math.floor(window.innerHeight / (boxSize + gap));
+      const grid = Array.from({ length: rows }, () => Array(cols).fill(null));
+
       let x = 0, y = 0;
+      let dir = 0;
+      let layer = 0;
       let index = 0;
 
-      for (const val of values) {
-        const box = document.createElement("div");
-        box.className = "history-box";
-        box.innerText = val;
-        box.style.backgroundColor = COLORS[Math.floor(Math.random() * COLORS.length)];
-        box.style.width = `${boxSize}px`;
-        box.style.height = `${boxSize}px`;
-        box.style.left = `${centerX + x * (boxSize + gap)}px`;
-        box.style.top = `${centerY + y * (boxSize + gap)}px`;
-        container.appendChild(box);
+      while (index < values.length) {
+        const top = layer;
+        const bottom = rows - 1 - layer;
+        const left = layer;
+        const right = cols - 1 - layer;
 
-        if (dir === 0) x++;
-        else if (dir === 1) y++;
-        else if (dir === 2) x--;
-        else if (dir === 3) y--;
+        // top row
+        for (x = left, y = top; x <= right && index < values.length; x++) {
+          grid[y][x] = values[index++];
+        }
+        // right col
+        for (x = right, y = top + 1; y <= bottom && index < values.length; y++) {
+          grid[y][x] = values[index++];
+        }
+        // bottom row
+        for (x = right - 1, y = bottom; x >= left && index < values.length; x--) {
+          grid[y][x] = values[index++];
+        }
+        // left col
+        for (x = left, y = bottom - 1; y > top && index < values.length; y--) {
+          grid[y][x] = values[index++];
+        }
 
-        stepCount++;
-        if (stepCount === steps) {
-          stepCount = 0;
-          dir = (dir + 1) % 4;
-          turns++;
-          if (turns % 2 === 0) steps++;
+        layer++;
+      }
+
+      const offsetX = (window.innerWidth - cols * (boxSize + gap)) / 2;
+      const offsetY = (window.innerHeight - rows * (boxSize + gap)) / 2;
+
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const val = grid[row][col];
+          if (val !== null) {
+            const box = document.createElement("div");
+            box.className = "history-box";
+            box.innerText = val;
+            box.style.backgroundColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+            box.style.width = `${boxSize}px`;
+            box.style.height = `${boxSize}px`;
+            box.style.left = `${offsetX + col * (boxSize + gap)}px`;
+            box.style.top = `${offsetY + row * (boxSize + gap)}px`;
+            container.appendChild(box);
+          }
         }
       }
     }
@@ -127,7 +151,6 @@
       const gap = boxSize * 0.1;
       const centerX = w / 2 - boxSize / 2;
       const centerY = h / 2 - boxSize / 2;
-
       placeBoxes(centerX, centerY, boxSize, gap, history);
     }
 
@@ -155,6 +178,7 @@
   </script>
 </body>
 </html>
+
 
 
 <!--
