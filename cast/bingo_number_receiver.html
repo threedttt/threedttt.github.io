@@ -45,11 +45,16 @@
       font-size: 5vw;
       font-weight: bold;
     }
+
+    #beep-sound {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <div id="container">
     <div id="number">等待投放...v4</div>
+    <audio id="beep-sound" src="casino_bells1.mp3" preload="auto"></audio>
   </div>
 
   <script>
@@ -58,6 +63,7 @@
 
     const container = document.getElementById("container");
     const numberDiv = document.getElementById("number");
+    const beep = document.getElementById("beep-sound");
     const COLORS = ["#B71C1C", "#1B5E20", "#0D47A1", "#F57F17", "#4A148C"];
 
     function placeBoxes(centerX, centerY, boxSize, gap, values) {
@@ -77,19 +83,15 @@
         const left = layer;
         const right = cols - 1 - layer;
 
-        // top row
         for (x = left, y = top; x <= right && index < values.length; x++) {
           grid[y][x] = values[index++];
         }
-        // right col
         for (x = right, y = top + 1; y <= bottom && index < values.length; y++) {
           grid[y][x] = values[index++];
         }
-        // bottom row
         for (x = right - 1, y = bottom; x >= left && index < values.length; x--) {
           grid[y][x] = values[index++];
         }
-        // left col
         for (x = left, y = bottom - 1; y > top && index < values.length; y--) {
           grid[y][x] = values[index++];
         }
@@ -118,25 +120,31 @@
       }
     }
 
-    function animateCurrentNumber(target, callback) {
+    function animateCurrentNumber(target, callback, volume = 1.0) {
       let duration = 3000;
       let interval = 100;
       let elapsed = 0;
 
       const randomInt = () => Math.floor(Math.random() * 100).toString();
 
+      beep.volume = Math.max(0, Math.min(1, volume));
+      beep.loop = true;
+      beep.play().catch(() => {});
+
       const intervalId = setInterval(() => {
         numberDiv.innerText = randomInt();
         elapsed += interval;
         if (elapsed >= duration) {
           clearInterval(intervalId);
+          beep.pause();
+          beep.currentTime = 0;
           numberDiv.innerText = target;
           if (callback) callback();
         }
       }, interval);
     }
 
-    function render(current, history) {
+    function render(current, history, volume = 1.0) {
       numberDiv.classList.add("animate");
       setTimeout(() => numberDiv.classList.remove("animate"), 150);
 
@@ -148,17 +156,18 @@
         const centerX = w / 2 - boxSize / 2;
         const centerY = h / 2 - boxSize / 2;
         placeBoxes(centerX, centerY, boxSize, gap, history);
-      });
+      }, volume);
     }
 
     function testRender() {
-      render("99", ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]);
+      render("99", ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"], 0.5);
     }
 
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       try {
         const data = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
-        render(data.current, data.history);
+        const volume = typeof data.volume === 'number' ? data.volume : 1.0;
+        render(data.current, data.history, volume);
       } catch (err) {
         console.error("解析錯誤", err);
       }
