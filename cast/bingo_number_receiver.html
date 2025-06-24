@@ -65,6 +65,7 @@
     const numberDiv = document.getElementById("number");
     const beep = document.getElementById("beep-sound");
     const COLORS = ["#B71C1C", "#1B5E20", "#0D47A1", "#F57F17", "#4A148C"];
+    let currentVolume = 1.0;
 
     function placeBoxes(centerX, centerY, boxSize, gap, values) {
       container.querySelectorAll(".history-box").forEach(e => e.remove());
@@ -144,7 +145,7 @@
       }, interval);
     }
 
-    function render(current, history, volume = 1.0) {
+    function render(current, history, volume = currentVolume) {
       numberDiv.classList.add("animate");
       setTimeout(() => numberDiv.classList.remove("animate"), 150);
 
@@ -159,22 +160,21 @@
       }, volume);
     }
 
-    function testRender() {
-      render("99", ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"], 0.5);
-    }
-
     context.addCustomMessageListener('urn:x-cast:com.playnjoin.bingocaller', event => {
       try {
         const data = (typeof event.data === 'string') ? JSON.parse(event.data) : event.data;
-        const volume = typeof data.volume === 'number' ? data.volume : 1.0;
-        render(data.current, data.history, volume);
+
+        if (typeof data.volume === 'number') {
+          currentVolume = Math.max(0, Math.min(1, data.volume));
+        }
+
+        render(data.current, data.history, currentVolume);
       } catch (err) {
         console.error("解析錯誤", err);
       }
     });
 
     context.start({ statusText: '準備就緒' });
-    //testRender();
   </script>
 </body>
 </html>
