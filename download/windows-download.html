@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WirelessScanner Windows 下載</title>
+  <meta name="description" content="WirelessScanner PC 端接收程式下載頁" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --sub: #4b5563;
+      --line: #dbe3f1;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --ghost: #eef2ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans TC", Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(145deg, #eef3ff, var(--bg));
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+    }
+
+    h1 { margin-top: 0; }
+    p { color: var(--sub); line-height: 1.7; }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .btn.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn.primary:hover { background: var(--primary-hover); }
+
+    .btn.ghost {
+      background: var(--ghost);
+      color: #1e3a8a;
+      border-color: #c7d2fe;
+    }
+
+    .note {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f8fbff;
+      border: 1px dashed #bfd3ff;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    code {
+      background: #f3f4f6;
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>WirelessScanner PC 端接收程式下載</h1>
+      <p>
+        這個頁面可掛在你既有網站結構下，例如：
+        <code>/windows-download.html</code>。
+        不會覆蓋你原本首頁（index.html）。
+      </p>
+
+      <div class="actions">
+        <!-- 方案 A：直接下載同目錄檔案（請把檔名改成實際發布檔） -->
+        <a class="btn ghost" href="./WirelessScanner_Server.zip">直接下載（同目錄檔案）</a>
+
+        <!-- 方案 B：導向 GitHub Releases（建議） -->
+        <a class="btn primary" href="https://github.com/<YOUR_ACCOUNT>/<YOUR_REPO>/releases/latest" target="_blank" rel="noopener noreferrer">
+          前往 GitHub Releases 下載最新版
+        </a>
+      </div>
+
+      <div class="note">
+        可以把安裝檔放在與網頁相同目錄，使用者就能直接下載；
+        但若要版本管理、更新紀錄與檔案驗證（SHA256），建議放在 GitHub Releases。
+      </div>
+    </section>
+  </main>
+</body>
+</html>
